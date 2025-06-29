@@ -1,5 +1,17 @@
 import os, re
 
+def natural_sort_key(s):
+    """实现特定排序规则：数字按自然排序，但带前导零的数字排在相同值的数字之前"""
+    def convert(text):
+        if text.isdigit():
+            num_val = int(text)
+            # 如果是以0开头的数字，返回一个特殊的元组使其排在普通数字之前
+            if text.startswith('0') and len(text) > 1:
+                return (num_val - 0.5, text)
+            return (num_val, text)
+        return text.lower()
+    return [convert(p) for p in re.split('([0-9]+)', s)]
+
 # 原始图片路径
 folder_path = "新建文件夹"
 # 新名称列表 (调整顺序)
@@ -11,14 +23,10 @@ new_names = [
     "郑芳健", "王芳龙", "麻弘涛", "徐策", "陈义谋"
 ]
 
-# 获取文件夹中所有png文件并按Windows自然排序，确保5a0c830d7347d2bb0c51df4815176a79.png是最后一个文件
+# 获取文件夹中所有png文件并按特定规则排序
 files = sorted(
     [f for f in os.listdir(folder_path) if f.endswith('.png')],
-    key=lambda x: [
-        "inf" if x == "5a0c830d7347d2bb0c51df4815176a79.png" else
-        int(c) if c.isdigit() else c.lower()
-        for c in re.split('([0-9]+)', x)
-    ]
+    key=natural_sort_key
 )
 
 # 验证文件数量和名称列表匹配
