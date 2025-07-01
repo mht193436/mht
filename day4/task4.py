@@ -22,7 +22,8 @@ for col in required_columns:
 data['AgeGroup'] = pd.cut(data['Age'], bins=[0, 18, 40, 60, float('inf')], labels=['0-18', '19-40', '41-60', '61+'])
 
 # 按性别和年龄组分组，计算生还率
-grouped = data.groupby(['Sex', 'AgeGroup'])['Survived'].mean().reset_index()
+# 显式设置 observed=False 以保留当前行为并消除警告
+grouped = data.groupby(['Sex', 'AgeGroup'], observed=False)['Survived'].mean().reset_index()
 
 # 设置图片清晰度
 plt.rcParams['figure.dpi'] = 300
